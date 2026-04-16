@@ -29,4 +29,4 @@ app.include_router(auth_router, prefix="/auth")
 app.include_router(download_router, prefix="/api")
 
 # Catch-all: serve Next.js static output (must be last)
-app.add_api_route("/{full_path:path}", serve_spa, methods=["GET"])
+app.add_api_route("/{full_path:path}", serve_spa, methods=["GET"], response_model=None)

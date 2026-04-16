@@ -1,11 +1,11 @@
 import os
 from fastapi import Request
-from fastapi.responses import FileResponse, HTMLResponse
+from fastapi.responses import FileResponse, HTMLResponse, Response
 
 STATIC_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "static")
 
 
-async def serve_spa(request: Request, full_path: str = "") -> FileResponse | HTMLResponse:
+async def serve_spa(request: Request, full_path: str = "") -> Response:
     # Exact file match
     candidate = os.path.join(STATIC_DIR, full_path)
     if os.path.isfile(candidate):
