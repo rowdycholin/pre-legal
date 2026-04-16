@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mutual NDA Creator</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1>Mutual NDA Creator</h1>
+      <p class="subtitle">Fill in the fields below to generate your Mutual Non-Disclosure Agreement.</p>
+    </header>
+
+    <div class="layout">
+      <!-- ── Form Panel ──────────────────────────────────────── -->
+      <aside class="form-panel">
+        <!--
+          The form POSTs to /download when the Download button is clicked,
+          which returns the filled NDA as a downloadable HTML file.
+          The live preview is driven by app.js on 'input' events (no submit).
+        -->
+        <form id="nda-form" action="/download" method="POST">
+
+          <section>
+            <h2>Purpose</h2>
+            <label for="purpose">How Confidential Information may be used</label>
+            <textarea id="purpose" name="purpose" rows="3"
+              placeholder="Evaluating whether to enter into a business relationship with the other party."
+              >Evaluating whether to enter into a business relationship with the other party.</textarea>
+          </section>
+
+          <section>
+            <h2>Effective Date</h2>
+            <input type="date" id="effective_date" name="effective_date" value="{{ today }}" />
+          </section>
+
+          <section>
+            <h2>MNDA Term</h2>
+            <label class="radio-label">
+              <input type="radio" name="mnda_term_type" value="expires" checked />
+              Expires
+              <input type="number" id="mnda_term_years" name="mnda_term_years"
+                     min="1" max="10" value="1" class="inline-num" />
+              year(s) from Effective Date
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="mnda_term_type" value="until-terminated" />
+              Continues until terminated
+            </label>
+          </section>
+
+          <section>
+            <h2>Term of Confidentiality</h2>
+            <label class="radio-label">
+              <input type="radio" name="conf_term_type" value="years" checked />
+              <input type="number" id="conf_term_years" name="conf_term_years"
+                     min="1" max="10" value="1" class="inline-num" />
+              year(s) from Effective Date (plus trade secret carve-out)
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="conf_term_type" value="perpetuity" />
+              In perpetuity
+            </label>
+          </section>
+
+          <section>
+            <h2>Governing Law &amp; Jurisdiction</h2>
+            <label for="governing_law">Governing State</label>
+            <input type="text" id="governing_law" name="governing_law" placeholder="e.g. Delaware" />
+            <label for="jurisdiction">Jurisdiction (city/county and state)</label>
+            <input type="text" id="jurisdiction" name="jurisdiction" placeholder="e.g. New Castle, Delaware" />
+          </section>
+
+          <section>
+            <h2>Modifications</h2>
+            <label for="modifications">List any modifications to the MNDA (optional)</label>
+            <textarea id="modifications" name="modifications" rows="3" placeholder="None."></textarea>
+          </section>
+
+          <section>
+            <h2>Party 1</h2>
+            <label for="p1_company">Company</label>
+            <input type="text" id="p1_company" name="p1_company" placeholder="Acme Corp." />
+            <label for="p1_name">Signatory Name</label>
+            <input type="text" id="p1_name" name="p1_name" placeholder="Jane Smith" />
+            <label for="p1_title">Title</label>
+            <input type="text" id="p1_title" name="p1_title" placeholder="CEO" />
+            <label for="p1_address">Notice Address (email or postal)</label>
+            <input type="text" id="p1_address" name="p1_address" placeholder="jane@acme.com" />
+          </section>
+
+          <section>
+            <h2>Party 2</h2>
+            <label for="p2_company">Company</label>
+            <input type="text" id="p2_company" name="p2_company" placeholder="Beta LLC" />
+            <label for="p2_name">Signatory Name</label>
+            <input type="text" id="p2_name" name="p2_name" placeholder="John Doe" />
+            <label for="p2_title">Title</label>
+            <input type="text" id="p2_title" name="p2_title" placeholder="CTO" />
+            <label for="p2_address">Notice Address (email or postal)</label>
+            <input type="text" id="p2_address" name="p2_address" placeholder="john@beta.com" />
+          </section>
+
+          <!-- Submit to /download — browser receives file download, page stays open -->
+          <button type="submit" class="download-btn">Download NDA</button>
+        </form>
+      </aside>
+
+      <!-- ── Preview Panel ───────────────────────────────────── -->
+      <main class="preview-panel">
+        <div class="preview-toolbar"><span>Live Document Preview</span></div>
+        <div id="nda-preview" class="nda-document">
+          <!-- Populated live by static/app.js via DOM manipulation -->
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

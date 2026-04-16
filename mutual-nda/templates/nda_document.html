@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mutual NDA &mdash; {{ p1_company or 'Party 1' }} &amp; {{ p2_company or 'Party 2' }}</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f5f5f3;
+      color: #1a1a1a;
+      padding: 40px;
+    }
+    .nda-doc-inner {
+      max-width: 760px;
+      margin: 0 auto;
+      background: #fff;
+      border: 1px solid #d1d1cc;
+      border-radius: 8px;
+      padding: 56px 64px;
+      font-size: .9rem;
+      line-height: 1.65;
+    }
+    h1 { font-size: 1.4rem; font-weight: 700; margin-bottom: 4px; }
+    h2 { font-size: 1rem; font-weight: 600; margin-top: 28px; margin-bottom: 6px; }
+    h3 {
+      font-size: .875rem; font-weight: 600; margin-top: 20px; margin-bottom: 4px;
+      color: #666; text-transform: uppercase; letter-spacing: .04em;
+    }
+    p { margin-bottom: 12px; }
+    .cover-divider { border: none; border-top: 2px solid #d1d1cc; margin: 32px 0; }
+    table { width: 100%; border-collapse: collapse; font-size: .85rem; margin-top: 16px; }
+    th, td { border: 1px solid #d1d1cc; padding: 10px 12px; text-align: left; vertical-align: top; }
+    th { background: #f5f5f3; font-weight: 600; width: 28%; }
+    .license-note { font-size: .78rem; color: #666; margin-top: 32px; }
+    @media print {
+      body { background: #fff; padding: 0; }
+      .nda-doc-inner { border: none; padding: 0; max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+<div class="nda-doc-inner">
+
+  <h1>Mutual Non-Disclosure Agreement</h1>
+
+  <h2>USING THIS MUTUAL NON-DISCLOSURE AGREEMENT</h2>
+  <p>This Mutual Non-Disclosure Agreement (the &#8220;<strong>MNDA</strong>&#8221;) consists of:
+  (1) this Cover Page (&#8220;<strong>Cover Page</strong>&#8221;) and (2) the Common Paper Mutual NDA
+  Standard Terms Version 1.0 (&#8220;<strong>Standard Terms</strong>&#8221;) identical to those posted at
+  commonpaper.com/standards/mutual-nda/1.0. Any modifications of the Standard Terms should be made on
+  the Cover Page, which will control over conflicts with the Standard Terms.</p>
+
+  <h3>Purpose</h3>
+  <p><em>How Confidential Information may be used</em><br />{{ purpose }}</p>
+
+  <h3>Effective Date</h3>
+  <p>{{ formatted_date if formatted_date else '[Today\'s date]' }}</p>
+
+  <h3>MNDA Term</h3>
+  <p><em>The length of this MNDA</em><br />
+  {% if mnda_term_type == 'expires' %}
+    Expires {{ mnda_term_years }} year(s) from Effective Date.
+  {% else %}
+    Continues until terminated in accordance with the terms of the MNDA.
+  {% endif %}
+  </p>
+
+  <h3>Term of Confidentiality</h3>
+  <p><em>How long Confidential Information is protected</em><br />
+  {% if conf_term_type == 'years' %}
+    {{ conf_term_years }} year(s) from Effective Date, but in the case of trade secrets until
+    Confidential Information is no longer considered a trade secret under applicable laws.
+  {% else %}
+    In perpetuity.
+  {% endif %}
+  </p>
+
+  <h3>Governing Law &amp; Jurisdiction</h3>
+  <p>
+    Governing Law: {{ governing_law if governing_law else '[fill in state]' }}<br />
+    Jurisdiction: {{ jurisdiction if jurisdiction else '[fill in city or county and state]' }}
+  </p>
+
+  <h3>MNDA Modifications</h3>
+  <p>{{ modifications }}</p>
+
+  <p style="margin-top:24px;">By signing this Cover Page, each party agrees to enter into this MNDA
+  as of the Effective Date.</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th></th>
+        <th>Party 1{% if p1_company %} &mdash; {{ p1_company }}{% endif %}</th>
+        <th>Party 2{% if p2_company %} &mdash; {{ p2_company }}{% endif %}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th>Signature</th>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <th>Print Name</th>
+        <td>{{ p1_name or '&nbsp;' }}</td>
+        <td>{{ p2_name or '&nbsp;' }}</td>
+      </tr>
+      <tr>
+        <th>Title</th>
+        <td>{{ p1_title or '&nbsp;' }}</td>
+        <td>{{ p2_title or '&nbsp;' }}</td>
+      </tr>
+      <tr>
+        <th>Company</th>
+        <td>{{ p1_company or '&nbsp;' }}</td>
+        <td>{{ p2_company or '&nbsp;' }}</td>
+      </tr>
+      <tr>
+        <th>Notice Address</th>
+        <td>{{ p1_address or '&nbsp;' }}</td>
+        <td>{{ p2_address or '&nbsp;' }}</td>
+      </tr>
+      <tr>
+        <th>Date</th>
+        <td>{{ formatted_date or '&nbsp;' }}</td>
+        <td>{{ formatted_date or '&nbsp;' }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <hr class="cover-divider" />
+
+  <h1>Standard Terms</h1>
+
+  <p><strong>1. Introduction.</strong> This Mutual Non-Disclosure Agreement (which incorporates these
+  Standard Terms and the Cover Page (defined below)) (&#8220;<strong>MNDA</strong>&#8221;) allows each
+  party (&#8220;<strong>Disclosing Party</strong>&#8221;) to disclose or make available information in
+  connection with the <em>{{ purpose }}</em> which (1) the Disclosing Party identifies to the receiving
+  party (&#8220;<strong>Receiving Party</strong>&#8221;) as &#8220;confidential&#8221;,
+  &#8220;proprietary&#8221;, or the like or (2) should be reasonably understood as confidential or
+  proprietary due to its nature and the circumstances of its disclosure
+  (&#8220;<strong>Confidential Information</strong>&#8221;). Each party&#8217;s Confidential Information
+  also includes the existence and status of the parties&#8217; discussions and information on the Cover
+  Page. Confidential Information includes technical or business information, product designs or roadmaps,
+  requirements, pricing, security and compliance documentation, technology, inventions and know-how.
+  To use this MNDA, the parties must complete and sign a cover page incorporating these Standard Terms
+  (&#8220;<strong>Cover Page</strong>&#8221;). Each party is identified on the Cover Page and capitalized
+  terms have the meanings given herein or on the Cover Page.</p>
+
+  <p><strong>2. Use and Protection of Confidential Information.</strong> The Receiving Party shall:
+  (a) use Confidential Information solely for the <em>{{ purpose }}</em>; (b) not disclose Confidential
+  Information to third parties without the Disclosing Party&#8217;s prior written approval, except that
+  the Receiving Party may disclose Confidential Information to its employees, agents, advisors,
+  contractors and other representatives having a reasonable need to know for the
+  <em>{{ purpose }}</em>, provided these representatives are bound by confidentiality obligations no
+  less protective of the Disclosing Party than the applicable terms in this MNDA and the Receiving
+  Party remains responsible for their compliance with this MNDA; and (c) protect Confidential
+  Information using at least the same protections the Receiving Party uses for its own similar
+  information but no less than a reasonable standard of care.</p>
+
+  <p><strong>3. Exceptions.</strong> The Receiving Party&#8217;s obligations in this MNDA do not
+  apply to information that it can demonstrate: (a) is or becomes publicly available through no fault
+  of the Receiving Party; (b) it rightfully knew or possessed prior to receipt from the Disclosing
+  Party without confidentiality restrictions; (c) it rightfully obtained from a third party without
+  confidentiality restrictions; or (d) it independently developed without using or referencing the
+  Confidential Information.</p>
+
+  <p><strong>4. Disclosures Required by Law.</strong> The Receiving Party may disclose Confidential
+  Information to the extent required by law, regulation or regulatory authority, subpoena or court
+  order, provided (to the extent legally permitted) it provides the Disclosing Party reasonable advance
+  notice of the required disclosure and reasonably cooperates, at the Disclosing Party&#8217;s expense,
+  with the Disclosing Party&#8217;s efforts to obtain confidential treatment for the Confidential
+  Information.</p>
+
+  <p><strong>5. Term and Termination.</strong> This MNDA commences on the
+  {{ formatted_date if formatted_date else '[Effective Date]' }} and expires at the end of the
+  {% if mnda_term_type == 'expires' %}
+    {{ mnda_term_years }} year(s) from Effective Date.
+  {% else %}
+    period continuing until terminated.
+  {% endif %}
+  Either party may terminate this MNDA for any or no reason upon written notice to the other party.
+  The Receiving Party&#8217;s obligations relating to Confidential Information will survive for the
+  {% if conf_term_type == 'years' %}
+    {{ conf_term_years }} year(s) from Effective Date, but in the case of trade secrets until
+    Confidential Information is no longer considered a trade secret under applicable laws,
+  {% else %}
+    term of perpetuity,
+  {% endif %}
+  despite any expiration or termination of this MNDA.</p>
+
+  <p><strong>6. Return or Destruction of Confidential Information.</strong> Upon expiration or
+  termination of this MNDA or upon the Disclosing Party&#8217;s earlier request, the Receiving Party
+  will: (a) cease using Confidential Information; (b) promptly after the Disclosing Party&#8217;s
+  written request, destroy all Confidential Information in the Receiving Party&#8217;s possession or
+  control or return it to the Disclosing Party; and (c) if requested by the Disclosing Party, confirm
+  its compliance with these obligations in writing. As an exception to subsection (b), the Receiving
+  Party may retain Confidential Information in accordance with its standard backup or record retention
+  policies or as required by law, but the terms of this MNDA will continue to apply to the retained
+  Confidential Information.</p>
+
+  <p><strong>7. Proprietary Rights.</strong> The Disclosing Party retains all of its intellectual
+  property and other rights in its Confidential Information and its disclosure to the Receiving Party
+  grants no license under such rights.</p>
+
+  <p><strong>8. Disclaimer.</strong> ALL CONFIDENTIAL INFORMATION IS PROVIDED &#8220;AS IS&#8221;,
+  WITH ALL FAULTS, AND WITHOUT WARRANTIES, INCLUDING THE IMPLIED WARRANTIES OF TITLE, MERCHANTABILITY
+  AND FITNESS FOR A PARTICULAR PURPOSE.</p>
+
+  <p><strong>9. Governing Law and Jurisdiction.</strong> This MNDA and all matters relating hereto are
+  governed by, and construed in accordance with, the laws of the State of
+  {{ governing_law if governing_law else '[Governing Law]' }}, without regard to the conflict of laws
+  provisions of such {{ governing_law if governing_law else '[Governing Law]' }}. Any legal suit,
+  action, or proceeding relating to this MNDA must be instituted in the federal or state courts located
+  in {{ jurisdiction if jurisdiction else '[Jurisdiction]' }}. Each party irrevocably submits to the
+  exclusive jurisdiction of such {{ jurisdiction if jurisdiction else '[Jurisdiction]' }} in any such
+  suit, action, or proceeding.</p>
+
+  <p><strong>10. Equitable Relief.</strong> A breach of this MNDA may cause irreparable harm for which
+  monetary damages are an insufficient remedy. Upon a breach of this MNDA, the Disclosing Party is
+  entitled to seek appropriate equitable relief, including an injunction, in addition to its other
+  remedies.</p>
+
+  <p><strong>11. General.</strong> Neither party has an obligation under this MNDA to disclose
+  Confidential Information to the other or proceed with any proposed transaction. Neither party may
+  assign this MNDA without the prior written consent of the other party, except that either party may
+  assign this MNDA in connection with a merger, reorganization, acquisition or other transfer of all
+  or substantially all its assets or voting securities. Any assignment in violation of this Section is
+  null and void. This MNDA will bind and inure to the benefit of each party&#8217;s permitted
+  successors and assigns. Waivers must be signed by the waiving party&#8217;s authorized representative
+  and cannot be implied from conduct. If any provision of this MNDA is held unenforceable, it will be
+  limited to the minimum extent necessary so the rest of this MNDA remains in effect. This MNDA
+  (including the Cover Page) constitutes the entire agreement of the parties with respect to its
+  subject matter, and supersedes all prior and contemporaneous understandings, agreements,
+  representations, and warranties, whether written or oral, regarding such subject matter. This MNDA
+  may only be amended, modified, waived, or supplemented by an agreement in writing signed by both
+  parties. Notices, requests and approvals under this MNDA must be sent in writing to the email or
+  postal addresses on the Cover Page and are deemed delivered on receipt. This MNDA may be executed
+  in counterparts, including electronic copies, each of which is deemed an original and which together
+  form the same agreement.</p>
+
+  <p class="license-note">Common Paper Mutual Non-Disclosure Agreement
+  <a href="https://commonpaper.com/standards/mutual-nda/1.0/">Version 1.0</a>
+  free to use under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.</p>
+
+</div>
+</body>
+</html>
