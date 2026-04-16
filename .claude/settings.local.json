@@ -7,7 +7,10 @@
       "Bash(python -c \"import json,sys; data=json.load\\(sys.stdin\\); [print\\(f['path']\\) for f in data.get\\('tree',[]\\) if f['path'].endswith\\('.md'\\)]\" done)",
       "Bash(curl -s https://raw.githubusercontent.com/CommonPaper/__TRACKED_VAR__/main/README.md)",
       "Bash(ls /c/Users/beatt/projects/cursor/pre-legal/*.json)",
-      "mcp__atlassian__getTransitionsForJiraIssue"
+      "mcp__atlassian__getTransitionsForJiraIssue",
+      "Bash(git checkout *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)"
     ]
   }
 }
