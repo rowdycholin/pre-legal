@@ -17,9 +17,13 @@ export default function NdaCreator() {
   const handleDownload = useCallback(async () => {
     setDownloading(true);
     try {
+      const token = localStorage.getItem('auth_token') ?? '';
       const res = await fetch('/api/download', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
         body: JSON.stringify(formData),
       });
 
@@ -57,7 +61,7 @@ export default function NdaCreator() {
           <button
             onClick={handleDownload}
             disabled={downloading}
-            className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold py-3 px-4 rounded-lg text-sm transition-colors"
+            className="w-full bg-purple-secondary hover:opacity-90 disabled:opacity-50 text-white font-semibold py-3 px-4 rounded-lg text-sm transition-opacity"
           >
             {downloading ? 'Generating…' : 'Download NDA'}
           </button>
@@ -66,7 +70,7 @@ export default function NdaCreator() {
 
       {/* ── Preview Panel ────────────────────────────────────────── */}
       <main className="flex-1 flex flex-col overflow-hidden bg-gray-50">
-        <div className="flex-shrink-0 border-b border-gray-200 bg-white px-5 py-2.5 text-xs font-medium text-gray-500">
+        <div className="flex-shrink-0 border-b border-gray-200 bg-white px-5 py-2.5 text-xs font-medium text-gray-text">
           Live Document Preview
         </div>
         <div className="flex-1 overflow-y-auto p-8">

@@ -19,6 +19,9 @@ lib/
 lib64/
 .eggs/
 
+# Frontend source lib is not a Python lib directory
+!frontend/lib/
+
 # Virtual environments
 .env
 .venv
