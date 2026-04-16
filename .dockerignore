@@ -1,0 +1,12 @@
+**/.git
+**/.gitignore
+**/node_modules
+**/.next
+frontend/out
+backend/static
+backend/__pycache__
+backend/**/__pycache__
+backend/*.db
+**/*.pyc
+**/dist
+**/build

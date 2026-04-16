@@ -20,7 +20,11 @@
       "Bash(node -e \"const j = require\\('./node_modules/jest-config/build/Defaults.js'\\); const keys = Object.keys\\(require\\('./node_modules/jest-config/build/ValidConfig.js'\\).default || {}\\); keys.filter\\(k => k.toLowerCase\\(\\).includes\\('setup'\\)\\).forEach\\(k => console.log\\(k\\)\\)\")",
       "Bash(xargs grep *)",
       "Bash(npm test *)",
-      "Bash(npm run *)"
+      "Bash(npm run *)",
+      "Bash(mkdir -p /c/Users/beatt/projects/cursor/pre-legal/backend/app)",
+      "Bash(mkdir -p /c/Users/beatt/projects/cursor/pre-legal/backend/static)",
+      "Bash(mkdir -p /c/Users/beatt/projects/cursor/pre-legal/scripts)",
+      "Bash(chmod +x *)"
     ]
   }
 }
