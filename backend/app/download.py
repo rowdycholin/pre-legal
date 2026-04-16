@@ -3,6 +3,7 @@ import re
 from datetime import datetime
 from typing import Literal
 
+import weasyprint
 from fastapi import APIRouter, Depends
 from fastapi.responses import Response
 from pydantic import BaseModel
@@ -63,7 +64,7 @@ def _build_filename(data: NdaFormData) -> str:
     p1 = _safe_filename_part(data.p1Company.strip()) if data.p1Company.strip() else "Party1"
     p2 = _safe_filename_part(data.p2Company.strip()) if data.p2Company.strip() else "Party2"
     date = _safe_filename_part(data.effectiveDate) if data.effectiveDate else datetime.now().strftime("%Y-%m-%d")
-    return f"Mutual-NDA_{p1}_{p2}_{date}.html"
+    return f"Mutual-NDA_{p1}_{p2}_{date}.pdf"
 
 
 def _e(s: str) -> str:
@@ -181,10 +182,11 @@ th{{background:#f5f5f3;font-weight:600;width:28%}}
 
 @router.post("/download")
 def download_nda(data: NdaFormData, _user: str = Depends(verify_token)):
-    content = _build_html(data)
+    html_content = _build_html(data)
+    pdf_bytes = weasyprint.HTML(string=html_content).write_pdf()
     filename = _build_filename(data)
     return Response(
-        content=content,
-        media_type="text/html; charset=utf-8",
+        content=pdf_bytes,
+        media_type="application/pdf",
         headers={"Content-Disposition": f'attachment; filename="{filename}"'},
     )

@@ -31,7 +31,7 @@ export default function NdaCreator() {
 
       const disposition = res.headers.get('Content-Disposition') ?? '';
       const match = disposition.match(/filename="([^"]+)"/);
-      const filename = match ? match[1] : 'Mutual-NDA.html';
+      const filename = match ? match[1] : 'Mutual-NDA.pdf';
 
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
