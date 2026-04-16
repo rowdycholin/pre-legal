@@ -1,10 +1,23 @@
 'use client';
 
-import { useState, useCallback } from 'react';
-import NdaForm from './NdaForm';
+import { useState, useCallback, useMemo } from 'react';
+import NdaChat from './NdaChat';
 import NdaDocument from './NdaDocument';
 import { defaultFormData } from '@/lib/ndaUtils';
 import type { NdaFormData } from '@/lib/types';
+
+const REQUIRED_FIELDS: (keyof NdaFormData)[] = [
+  'governingLaw',
+  'jurisdiction',
+  'p1Company',
+  'p1Name',
+  'p1Title',
+  'p1Address',
+  'p2Company',
+  'p2Name',
+  'p2Title',
+  'p2Address',
+];
 
 export default function NdaCreator() {
   const [formData, setFormData] = useState<NdaFormData>(defaultFormData);
@@ -14,6 +27,11 @@ export default function NdaCreator() {
     setFormData((prev) => ({ ...prev, ...updated }));
   }, []);
 
+  const allRequiredFilled = useMemo(
+    () => REQUIRED_FIELDS.every((f) => Boolean(formData[f])),
+    [formData],
+  );
+
   const handleDownload = useCallback(async () => {
     setDownloading(true);
     try {
@@ -22,7 +40,7 @@ export default function NdaCreator() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(formData),
       });
@@ -52,19 +70,28 @@ export default function NdaCreator() {
 
   return (
     <div className="flex h-full overflow-hidden">
-      {/* ── Form Panel ──────────────────────────────────────────── */}
+      {/* ── Chat Panel ──────────────────────────────────────────── */}
       <aside className="w-80 flex-shrink-0 flex flex-col bg-white border-r border-gray-200 overflow-hidden">
-        <div className="flex-1 overflow-y-auto p-5">
-          <NdaForm data={formData} onChange={handleChange} />
+        <div className="flex-shrink-0 border-b border-gray-200 px-4 py-2.5 text-xs font-semibold text-navy uppercase tracking-wide">
+          AI Assistant
+        </div>
+        <div className="flex-1 overflow-hidden">
+          <NdaChat currentFields={formData} onFieldsUpdate={handleChange} />
         </div>
         <div className="border-t border-gray-200 p-4">
           <button
             onClick={handleDownload}
-            disabled={downloading}
-            className="w-full bg-purple-secondary hover:opacity-90 disabled:opacity-50 text-white font-semibold py-3 px-4 rounded-lg text-sm transition-opacity"
+            disabled={downloading || !allRequiredFilled}
+            title={!allRequiredFilled ? 'Complete all required fields to download' : undefined}
+            className="w-full bg-purple-secondary hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-3 px-4 rounded-lg text-sm transition-opacity"
           >
             {downloading ? 'Generating…' : 'Download NDA'}
           </button>
+          {!allRequiredFilled && (
+            <p className="mt-2 text-center text-xs text-gray-text">
+              Fill all required fields to enable download
+            </p>
+          )}
         </div>
       </aside>
 
