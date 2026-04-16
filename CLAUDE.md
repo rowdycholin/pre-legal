@@ -8,17 +8,18 @@ This is a SaaS project to allow user to draft legal documents based on templates
 
 ## Current Status (as of 2026-04-16)
 
-**KAN-6 complete.** The V1 foundation is built and running. The app is fully containerised and accessible at http://localhost:8000.
+**KAN-7 complete.** AI Chat is live for the Mutual NDA. The app is fully containerised and accessible at http://localhost:8000.
 
 What is implemented:
-- **Frontend:** Next.js 16 static export served by FastAPI. Login page with JWT auth. Mutual NDA creator with live preview and PDF download. Brand color scheme applied.
-- **Backend:** FastAPI (uv project) at `backend/`. Endpoints: `POST /auth/login`, `POST /api/download` (returns PDF via WeasyPrint). SQLite database scaffolded at `/app/data/pre_legal.db` (persisted via Docker volume).
+- **Frontend:** Next.js 16 static export served by FastAPI. Login page with JWT auth. Mutual NDA creator with live document preview and PDF download. Brand color scheme applied.
+- **AI Chat:** Freeform chat interface (`NdaChat` component) powered by OpenRouter (`gpt-oss-120b`). The AI converses with the user, asks about NDA fields, and populates the live preview in real time via SSE streaming and tool use. Download button is disabled until all mandatory fields are filled.
+- **Backend:** FastAPI (uv project) at `backend/`. Endpoints: `POST /auth/login`, `POST /api/download` (PDF via WeasyPrint), `POST /api/chat` (SSE streaming, OpenRouter tool use). SQLite database scaffolded at `/app/data/pre_legal.db` (persisted via Docker volume).
 - **Auth:** Hardcoded credentials (`user` / `password`) — registration and real user management deferred to a future ticket.
-- **Docker:** Single container, multi-stage build. Run with `./scripts/start.sh` or `./scripts/start.ps1`.
+- **Docker:** Single container, multi-stage build. `OPENROUTER_API_KEY` loaded from `.env` via `env_file` in `docker-compose.yml`. Run with `./scripts/start.sh` or `./scripts/start.ps1`.
 - **Documents:** Mutual NDA only. All other documents in `catalog.json` are defined but not yet implemented.
+- **Tests:** Backend unit tests in `backend/tests/` (pytest + respx). Frontend unit tests in `frontend/__tests__/` (Jest).
 
 What is **not yet** implemented:
-- AI Chat / OpenRouter integration
 - User registration and real auth
 - Support for the remaining 11 document types beyond Mutual NDA
 
@@ -43,6 +44,7 @@ When writing code to call LLMs use openrouter to call the model gpt-oss-120b mod
 - **Database:** SQLite at `/app/data/pre_legal.db`, persisted via Docker volume.
 - **Auth:** JWT-based. Tokens issued by `POST /auth/login`, stored in `localStorage`, sent as `Authorization: Bearer` header.
 - **PDF generation:** WeasyPrint converts the NDA HTML template to PDF server-side.
+- **AI Chat:** `POST /api/chat` — SSE streaming endpoint. Sends conversation history + current field state to OpenRouter (`gpt-oss-120b`). Model streams a natural language response and calls the `update_nda_fields` tool to return extracted field values. Frontend merges extracted fields into `NdaFormData` state, driving the live preview.
 - **Scripts:** `scripts/` — `start.sh` / `stop.sh` (Linux/macOS), `start.ps1` / `stop.ps1` (Windows PowerShell).
 
 Backend available at http://localhost:8000
@@ -72,3 +74,6 @@ Backend available at http://localhost:8000
 - `npm run build` — static export to `frontend/out/`
 - `npm run lint` — ESLint
 - `npm test` — Jest unit tests
+
+**Backend tests (host machine):**
+- `cd backend && pip install -e ".[test]" && python -m pytest tests/ -v`
