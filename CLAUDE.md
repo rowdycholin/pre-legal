@@ -6,7 +6,21 @@ This is a SaaS project to allow user to draft legal documents based on templates
 
 @catalogue.json
 
-Before we start: the initial implementation is a frontend only prototype that supports the Mutual NDA document with no AI Chat.
+## Current Status (as of 2026-04-16)
+
+**KAN-6 complete.** The V1 foundation is built and running. The app is fully containerised and accessible at http://localhost:8000.
+
+What is implemented:
+- **Frontend:** Next.js 16 static export served by FastAPI. Login page with JWT auth. Mutual NDA creator with live preview and PDF download. Brand color scheme applied.
+- **Backend:** FastAPI (uv project) at `backend/`. Endpoints: `POST /auth/login`, `POST /api/download` (returns PDF via WeasyPrint). SQLite database scaffolded at `/app/data/pre_legal.db` (persisted via Docker volume).
+- **Auth:** Hardcoded credentials (`user` / `password`) — registration and real user management deferred to a future ticket.
+- **Docker:** Single container, multi-stage build. Run with `./scripts/start.sh` or `./scripts/start.ps1`.
+- **Documents:** Mutual NDA only. All other documents in `catalog.json` are defined but not yet implemented.
+
+What is **not yet** implemented:
+- AI Chat / OpenRouter integration
+- User registration and real auth
+- Support for the remaining 11 document types beyond Mutual NDA
 
 ## Development Process
 When instructed to build a feature:
