@@ -37,13 +37,13 @@ When writing code to call LLMs use openrouter to call the model gpt-oss-120b mod
 
 ## Technical Design
 
-The entire project should be packaged into a docker container.  
-The backend should be in a backend/ directory and be a uv project, using FastAPI.
-There should be a database for users using SQLLite. The application should have a login script with the option to create a new user as well.   
-The frontend should be in the frontend/ directory.  
-Consider statically building the frontend and serving it via FastApi, if that will work.  
-There should be scripts in the scripts/ directory to stop and start the container. Create for Linux, MacOS and Windows using PowerShell. 
-
+- **Container:** Single Docker container, multi-stage build (Node builds frontend, Python runs FastAPI). Managed via `docker-compose.yml` at the project root.
+- **Backend:** `backend/` — uv project, FastAPI, Python 3.12. Runs on port 8000 and serves both the API and the static frontend.
+- **Frontend:** `frontend/` — Next.js 16, React 19, TypeScript, Tailwind v4. Built as a static export (`output: 'export'`) and served by FastAPI.
+- **Database:** SQLite at `/app/data/pre_legal.db`, persisted via Docker volume.
+- **Auth:** JWT-based. Tokens issued by `POST /auth/login`, stored in `localStorage`, sent as `Authorization: Bearer` header.
+- **PDF generation:** WeasyPrint converts the NDA HTML template to PDF server-side.
+- **Scripts:** `scripts/` — `start.sh` / `stop.sh` (Linux/macOS), `start.ps1` / `stop.ps1` (Windows PowerShell).
 
 Backend available at http://localhost:8000
 
@@ -61,6 +61,14 @@ Backend available at http://localhost:8000
 - **Tone:** Encouraging but grounded and expert-led.
 
 ## Commands
-- **Dev:** `npm run dev`
-- **Build:** `npm run build`
-- **Lint:** `npm run lint`
+
+**Run the app (Docker):**
+- `./scripts/start.sh` — build and start (Linux/macOS)
+- `./scripts/start.ps1` — build and start (Windows PowerShell)
+- `./scripts/stop.sh` / `./scripts/stop.ps1` — stop the container
+
+**Frontend development only:**
+- `npm run dev` — Next.js dev server (no backend; auth and download won't work)
+- `npm run build` — static export to `frontend/out/`
+- `npm run lint` — ESLint
+- `npm test` — Jest unit tests
