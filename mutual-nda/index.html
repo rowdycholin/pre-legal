@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mutual NDA Creator</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1>Mutual NDA Creator</h1>
+      <p class="subtitle">Fill in the fields below to generate your Mutual Non-Disclosure Agreement.</p>
+    </header>
+
+    <div class="layout">
+      <!-- Form Panel -->
+      <aside class="form-panel">
+        <form id="nda-form">
+          <section>
+            <h2>Purpose</h2>
+            <label for="purpose">How Confidential Information may be used</label>
+            <textarea id="purpose" rows="3" placeholder="Evaluating whether to enter into a business relationship with the other party.">Evaluating whether to enter into a business relationship with the other party.</textarea>
+          </section>
+
+          <section>
+            <h2>Effective Date</h2>
+            <input type="date" id="effective-date" />
+          </section>
+
+          <section>
+            <h2>MNDA Term</h2>
+            <label class="radio-label">
+              <input type="radio" name="mnda-term" value="expires" checked />
+              Expires
+              <input type="number" id="mnda-term-years" min="1" max="10" value="1" class="inline-num" />
+              year(s) from Effective Date
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="mnda-term" value="until-terminated" />
+              Continues until terminated
+            </label>
+          </section>
+
+          <section>
+            <h2>Term of Confidentiality</h2>
+            <label class="radio-label">
+              <input type="radio" name="conf-term" value="years" checked />
+              <input type="number" id="conf-term-years" min="1" max="10" value="1" class="inline-num" />
+              year(s) from Effective Date (plus trade secret carve-out)
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="conf-term" value="perpetuity" />
+              In perpetuity
+            </label>
+          </section>
+
+          <section>
+            <h2>Governing Law &amp; Jurisdiction</h2>
+            <label for="governing-law">Governing State</label>
+            <input type="text" id="governing-law" placeholder="e.g. Delaware" />
+            <label for="jurisdiction">Jurisdiction (city/county and state)</label>
+            <input type="text" id="jurisdiction" placeholder="e.g. New Castle, Delaware" />
+          </section>
+
+          <section>
+            <h2>Modifications</h2>
+            <label for="modifications">List any modifications to the MNDA (optional)</label>
+            <textarea id="modifications" rows="3" placeholder="None."></textarea>
+          </section>
+
+          <section>
+            <h2>Party 1</h2>
+            <label for="p1-company">Company</label>
+            <input type="text" id="p1-company" placeholder="Acme Corp." />
+            <label for="p1-name">Signatory Name</label>
+            <input type="text" id="p1-name" placeholder="Jane Smith" />
+            <label for="p1-title">Title</label>
+            <input type="text" id="p1-title" placeholder="CEO" />
+            <label for="p1-address">Notice Address (email or postal)</label>
+            <input type="text" id="p1-address" placeholder="jane@acme.com" />
+          </section>
+
+          <section>
+            <h2>Party 2</h2>
+            <label for="p2-company">Company</label>
+            <input type="text" id="p2-company" placeholder="Beta LLC" />
+            <label for="p2-name">Signatory Name</label>
+            <input type="text" id="p2-name" placeholder="John Doe" />
+            <label for="p2-title">Title</label>
+            <input type="text" id="p2-title" placeholder="CTO" />
+            <label for="p2-address">Notice Address (email or postal)</label>
+            <input type="text" id="p2-address" placeholder="john@beta.com" />
+          </section>
+        </form>
+
+        <button id="download-btn" class="download-btn">Download NDA</button>
+      </aside>
+
+      <!-- Preview Panel -->
+      <main class="preview-panel">
+        <div class="preview-toolbar">
+          <span>Document Preview</span>
+        </div>
+        <div id="nda-preview" class="nda-document">
+          <!-- Populated by app.js via DOM manipulation -->
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
