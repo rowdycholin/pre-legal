@@ -180,11 +180,360 @@ th{{background:#f5f5f3;font-weight:600;width:28%}}
 </html>"""
 
 
+class PilotFormData(BaseModel):
+    provider: str = ""
+    customer: str = ""
+    product: str = ""
+    effectiveDate: str = ""
+    pilotStart: str = ""
+    pilotEnd: str = ""
+    governingLaw: str = ""
+    chosenCourts: str = ""
+    generalCapAmount: str = ""
+    fees: str = ""
+    p1Name: str = ""
+    p1Title: str = ""
+    p1Address: str = ""
+    p2Name: str = ""
+    p2Title: str = ""
+    p2Address: str = ""
+
+
+class DesignPartnerFormData(BaseModel):
+    provider: str = ""
+    partner: str = ""
+    product: str = ""
+    program: str = ""
+    effectiveDate: str = ""
+    term: str = ""
+    governingLaw: str = ""
+    chosenCourts: str = ""
+    fees: str = ""
+    p1Name: str = ""
+    p1Title: str = ""
+    p1Address: str = ""
+    p2Name: str = ""
+    p2Title: str = ""
+    p2Address: str = ""
+
+
+class AiAddendumFormData(BaseModel):
+    provider: str = ""
+    customer: str = ""
+    agreementName: str = ""
+    effectiveDate: str = ""
+    trainingData: str = ""
+    trainingPurposes: str = ""
+    trainingRestrictions: str = ""
+    improvementRestrictions: str = ""
+    governingLaw: str = ""
+    p1Name: str = ""
+    p1Title: str = ""
+    p1Address: str = ""
+    p2Name: str = ""
+    p2Title: str = ""
+    p2Address: str = ""
+
+
+def _cover_page_styles() -> str:
+    return """
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#f5f5f3;color:#1a1a1a;padding:40px}
+.doc{max-width:760px;margin:0 auto;background:#fff;border:1px solid #d1d1cc;border-radius:8px;padding:56px 64px;font-size:.9rem;line-height:1.65}
+h1{font-size:1.35rem;font-weight:700;margin-bottom:4px}
+h3{font-size:.8rem;font-weight:600;margin-top:20px;margin-bottom:4px;color:#555;text-transform:uppercase;letter-spacing:.05em}
+p{margin-bottom:12px}
+hr{border:none;border-top:2px solid #d1d1cc;margin:32px 0}
+table{width:100%;border-collapse:collapse;font-size:.85rem;margin-top:16px}
+th,td{border:1px solid #d1d1cc;padding:10px 12px;text-align:left;vertical-align:top}
+th{background:#f5f5f3;font-weight:600;width:28%}
+.note{font-size:.78rem;color:#666;margin-top:32px}
+@media print{body{background:#fff;padding:0}.doc{border:none;padding:0;max-width:100%}}
+"""
+
+
+def _build_html_nda_cover_page(data: NdaFormData) -> str:
+    fmt_date = _format_date(data.effectiveDate)
+    purpose = _e(data.purpose)
+    gov = _e(data.governingLaw) if data.governingLaw else "[fill in state]"
+    juris = _e(data.jurisdiction) if data.jurisdiction else "[fill in city or county and state]"
+    mods = _e(data.modifications) if data.modifications else "None."
+    p1co = _cell(data.p1Company)
+    p1na = _cell(data.p1Name)
+    p1ti = _cell(data.p1Title)
+    p1ad = _cell(data.p1Address)
+    p2co = _cell(data.p2Company)
+    p2na = _cell(data.p2Name)
+    p2ti = _cell(data.p2Title)
+    p2ad = _cell(data.p2Address)
+    date_cell = _e(fmt_date) if fmt_date else "&nbsp;"
+    p1h = f" &mdash; {_e(data.p1Company)}" if data.p1Company else ""
+    p2h = f" &mdash; {_e(data.p2Company)}" if data.p2Company else ""
+    mnda = _mnda_term(data)
+    conf = _conf_term(data)
+    title_p1 = _e(data.p1Company or "Party 1")
+    title_p2 = _e(data.p2Company or "Party 2")
+
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<title>Mutual NDA Cover Page &mdash; {title_p1} &amp; {title_p2}</title>
+<style>{_cover_page_styles()}</style>
+</head>
+<body>
+<div class="doc">
+<h1>Mutual Non-Disclosure Agreement &mdash; Cover Page</h1>
+<p>This Cover Page incorporates the Common Paper Mutual NDA Standard Terms Version 1.0 available at
+<a href="https://commonpaper.com/standards/mutual-nda/1.0/">commonpaper.com/standards/mutual-nda/1.0</a>.
+Any modifications below control over the Standard Terms.</p>
+<h3>Purpose</h3><p>{purpose}</p>
+<h3>Effective Date</h3><p>{_e(fmt_date) if fmt_date else "[Today&#8217;s date]"}</p>
+<h3>MNDA Term</h3><p>{mnda}</p>
+<h3>Term of Confidentiality</h3><p>{conf}</p>
+<h3>Governing Law &amp; Jurisdiction</h3><p>Governing Law: {gov}<br/>Jurisdiction: {juris}</p>
+<h3>MNDA Modifications</h3><p>{mods}</p>
+<p style="margin-top:24px">By signing this Cover Page, each party agrees to be bound by this MNDA as of the Effective Date.</p>
+<table>
+<thead><tr><th></th><th>Party 1{p1h}</th><th>Party 2{p2h}</th></tr></thead>
+<tbody>
+<tr><th>Signature</th><td>&nbsp;</td><td>&nbsp;</td></tr>
+<tr><th>Print Name</th><td>{p1na}</td><td>{p2na}</td></tr>
+<tr><th>Title</th><td>{p1ti}</td><td>{p2ti}</td></tr>
+<tr><th>Company</th><td>{p1co}</td><td>{p2co}</td></tr>
+<tr><th>Notice Address</th><td>{p1ad}</td><td>{p2ad}</td></tr>
+<tr><th>Date</th><td>{date_cell}</td><td>{date_cell}</td></tr>
+</tbody>
+</table>
+<p class="note">Common Paper Mutual NDA <a href="https://commonpaper.com/standards/mutual-nda/1.0/">Version 1.0</a> &#8212; Standard Terms incorporated by reference.</p>
+</div>
+</body>
+</html>"""
+
+
+def _build_html_pilot(data: PilotFormData) -> str:
+    fmt_date = _format_date(data.effectiveDate)
+    fmt_start = _format_date(data.pilotStart)
+    fmt_end = _format_date(data.pilotEnd)
+    provider = _cell(data.provider)
+    customer = _cell(data.customer)
+    product = _cell(data.product)
+    gov = _e(data.governingLaw) if data.governingLaw else "[fill in state]"
+    courts = _e(data.chosenCourts) if data.chosenCourts else "[fill in courts]"
+    cap = _cell(data.generalCapAmount)
+    fees = _e(data.fees) if data.fees else "None."
+    p1na = _cell(data.p1Name)
+    p1ti = _cell(data.p1Title)
+    p1ad = _cell(data.p1Address)
+    p2na = _cell(data.p2Name)
+    p2ti = _cell(data.p2Title)
+    p2ad = _cell(data.p2Address)
+    title_provider = _e(data.provider or "Provider")
+    title_customer = _e(data.customer or "Customer")
+
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<title>Pilot Agreement &mdash; {title_provider} &amp; {title_customer}</title>
+<style>{_cover_page_styles()}</style>
+</head>
+<body>
+<div class="doc">
+<h1>Pilot Agreement</h1>
+<p>This Pilot Agreement is entered into as of {_e(fmt_date) if fmt_date else "[Effective Date]"} between
+<strong>{provider}</strong> (&ldquo;Provider&rdquo;) and <strong>{customer}</strong> (&ldquo;Customer&rdquo;).</p>
+<h3>Product</h3><p>{product}</p>
+<h3>Pilot Period</h3><p>{_e(fmt_start) if fmt_start else "[Start Date]"} &ndash; {_e(fmt_end) if fmt_end else "[End Date]"}</p>
+<h3>Fees</h3><p>{fees}</p>
+<h3>Liability Cap</h3><p>{cap}</p>
+<h3>Governing Law &amp; Courts</h3><p>Governing Law: {gov}<br/>Chosen Courts: {courts}</p>
+<p style="margin-top:24px">By signing below, the parties agree to the terms of this Pilot Agreement.</p>
+<table>
+<thead><tr><th></th><th>Provider &mdash; {_e(data.provider or "")}</th><th>Customer &mdash; {_e(data.customer or "")}</th></tr></thead>
+<tbody>
+<tr><th>Signature</th><td>&nbsp;</td><td>&nbsp;</td></tr>
+<tr><th>Print Name</th><td>{p1na}</td><td>{p2na}</td></tr>
+<tr><th>Title</th><td>{p1ti}</td><td>{p2ti}</td></tr>
+<tr><th>Notice Address</th><td>{p1ad}</td><td>{p2ad}</td></tr>
+</tbody>
+</table>
+<p class="note">This is a cover-page summary. Full standard terms apply as agreed between the parties.</p>
+</div>
+</body>
+</html>"""
+
+
+def _build_html_design_partner(data: DesignPartnerFormData) -> str:
+    fmt_date = _format_date(data.effectiveDate)
+    provider = _cell(data.provider)
+    partner = _cell(data.partner)
+    product = _cell(data.product)
+    program = _cell(data.program)
+    gov = _e(data.governingLaw) if data.governingLaw else "[fill in state]"
+    courts = _e(data.chosenCourts) if data.chosenCourts else "[fill in courts]"
+    term = _e(data.term) if data.term else "[fill in term]"
+    fees = _e(data.fees) if data.fees else "None."
+    p1na = _cell(data.p1Name)
+    p1ti = _cell(data.p1Title)
+    p1ad = _cell(data.p1Address)
+    p2na = _cell(data.p2Name)
+    p2ti = _cell(data.p2Title)
+    p2ad = _cell(data.p2Address)
+    title_provider = _e(data.provider or "Provider")
+    title_partner = _e(data.partner or "Partner")
+
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<title>Design Partner Agreement &mdash; {title_provider} &amp; {title_partner}</title>
+<style>{_cover_page_styles()}</style>
+</head>
+<body>
+<div class="doc">
+<h1>Design Partner Agreement</h1>
+<p>This Design Partner Agreement is entered into as of {_e(fmt_date) if fmt_date else "[Effective Date]"} between
+<strong>{provider}</strong> (&ldquo;Provider&rdquo;) and <strong>{partner}</strong> (&ldquo;Partner&rdquo;).</p>
+<h3>Product</h3><p>{product}</p>
+<h3>Program</h3><p>{program}</p>
+<h3>Term</h3><p>{term}</p>
+<h3>Fees</h3><p>{fees}</p>
+<h3>Governing Law &amp; Courts</h3><p>Governing Law: {gov}<br/>Chosen Courts: {courts}</p>
+<p style="margin-top:24px">By signing below, the parties agree to the terms of this Design Partner Agreement.</p>
+<table>
+<thead><tr><th></th><th>Provider &mdash; {_e(data.provider or "")}</th><th>Partner &mdash; {_e(data.partner or "")}</th></tr></thead>
+<tbody>
+<tr><th>Signature</th><td>&nbsp;</td><td>&nbsp;</td></tr>
+<tr><th>Print Name</th><td>{p1na}</td><td>{p2na}</td></tr>
+<tr><th>Title</th><td>{p1ti}</td><td>{p2ti}</td></tr>
+<tr><th>Notice Address</th><td>{p1ad}</td><td>{p2ad}</td></tr>
+</tbody>
+</table>
+<p class="note">This is a cover-page summary. Full standard terms apply as agreed between the parties.</p>
+</div>
+</body>
+</html>"""
+
+
+def _build_html_ai_addendum(data: AiAddendumFormData) -> str:
+    fmt_date = _format_date(data.effectiveDate)
+    provider = _cell(data.provider)
+    customer = _cell(data.customer)
+    agreement = _cell(data.agreementName)
+    gov = _e(data.governingLaw) if data.governingLaw else "[fill in state]"
+    training_data = _e(data.trainingData) if data.trainingData else "[fill in]"
+    training_purposes = _e(data.trainingPurposes) if data.trainingPurposes else "None."
+    training_restrictions = _e(data.trainingRestrictions) if data.trainingRestrictions else "None."
+    improvement_restrictions = _e(data.improvementRestrictions) if data.improvementRestrictions else "None."
+    p1na = _cell(data.p1Name)
+    p1ti = _cell(data.p1Title)
+    p1ad = _cell(data.p1Address)
+    p2na = _cell(data.p2Name)
+    p2ti = _cell(data.p2Title)
+    p2ad = _cell(data.p2Address)
+    title_provider = _e(data.provider or "Provider")
+    title_customer = _e(data.customer or "Customer")
+
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<title>AI Addendum &mdash; {title_provider} &amp; {title_customer}</title>
+<style>{_cover_page_styles()}</style>
+</head>
+<body>
+<div class="doc">
+<h1>AI Addendum</h1>
+<p>This AI Addendum supplements the <strong>{agreement}</strong> between
+<strong>{provider}</strong> (&ldquo;Provider&rdquo;) and <strong>{customer}</strong> (&ldquo;Customer&rdquo;),
+effective {_e(fmt_date) if fmt_date else "[Effective Date]"}.</p>
+<h3>Training Data</h3><p>{training_data}</p>
+<h3>Permitted Training Purposes</h3><p>{training_purposes}</p>
+<h3>Training Restrictions</h3><p>{training_restrictions}</p>
+<h3>Model Improvement Restrictions</h3><p>{improvement_restrictions}</p>
+<h3>Governing Law</h3><p>{gov}</p>
+<p style="margin-top:24px">By signing below, the parties agree to the terms of this AI Addendum.</p>
+<table>
+<thead><tr><th></th><th>Provider &mdash; {_e(data.provider or "")}</th><th>Customer &mdash; {_e(data.customer or "")}</th></tr></thead>
+<tbody>
+<tr><th>Signature</th><td>&nbsp;</td><td>&nbsp;</td></tr>
+<tr><th>Print Name</th><td>{p1na}</td><td>{p2na}</td></tr>
+<tr><th>Title</th><td>{p1ti}</td><td>{p2ti}</td></tr>
+<tr><th>Notice Address</th><td>{p1ad}</td><td>{p2ad}</td></tr>
+</tbody>
+</table>
+<p class="note">This Addendum is incorporated into and made part of the base agreement named above.</p>
+</div>
+</body>
+</html>"""
+
+
 @router.post("/download")
 def download_nda(data: NdaFormData, _user: str = Depends(verify_token)):
     html_content = _build_html(data)
     pdf_bytes = weasyprint.HTML(string=html_content).write_pdf()
     filename = _build_filename(data)
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
+
+
+@router.post("/download/nda-cover-page")
+def download_nda_cover_page(data: NdaFormData, _user: str = Depends(verify_token)):
+    html_content = _build_html_nda_cover_page(data)
+    pdf_bytes = weasyprint.HTML(string=html_content).write_pdf()
+    p1 = _safe_filename_part(data.p1Company.strip()) if data.p1Company.strip() else "Party1"
+    p2 = _safe_filename_part(data.p2Company.strip()) if data.p2Company.strip() else "Party2"
+    date = _safe_filename_part(data.effectiveDate) if data.effectiveDate else datetime.now().strftime("%Y-%m-%d")
+    filename = f"NDA-Cover-Page_{p1}_{p2}_{date}.pdf"
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
+
+
+@router.post("/download/pilot")
+def download_pilot(data: PilotFormData, _user: str = Depends(verify_token)):
+    html_content = _build_html_pilot(data)
+    pdf_bytes = weasyprint.HTML(string=html_content).write_pdf()
+    p1 = _safe_filename_part(data.provider.strip()) if data.provider.strip() else "Provider"
+    p2 = _safe_filename_part(data.customer.strip()) if data.customer.strip() else "Customer"
+    date = _safe_filename_part(data.effectiveDate) if data.effectiveDate else datetime.now().strftime("%Y-%m-%d")
+    filename = f"Pilot-Agreement_{p1}_{p2}_{date}.pdf"
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
+
+
+@router.post("/download/design-partner")
+def download_design_partner(data: DesignPartnerFormData, _user: str = Depends(verify_token)):
+    html_content = _build_html_design_partner(data)
+    pdf_bytes = weasyprint.HTML(string=html_content).write_pdf()
+    p1 = _safe_filename_part(data.provider.strip()) if data.provider.strip() else "Provider"
+    p2 = _safe_filename_part(data.partner.strip()) if data.partner.strip() else "Partner"
+    date = _safe_filename_part(data.effectiveDate) if data.effectiveDate else datetime.now().strftime("%Y-%m-%d")
+    filename = f"Design-Partner-Agreement_{p1}_{p2}_{date}.pdf"
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
+
+
+@router.post("/download/ai-addendum")
+def download_ai_addendum(data: AiAddendumFormData, _user: str = Depends(verify_token)):
+    html_content = _build_html_ai_addendum(data)
+    pdf_bytes = weasyprint.HTML(string=html_content).write_pdf()
+    p1 = _safe_filename_part(data.provider.strip()) if data.provider.strip() else "Provider"
+    p2 = _safe_filename_part(data.customer.strip()) if data.customer.strip() else "Customer"
+    date = _safe_filename_part(data.effectiveDate) if data.effectiveDate else datetime.now().strftime("%Y-%m-%d")
+    filename = f"AI-Addendum_{p1}_{p2}_{date}.pdf"
     return Response(
         content=pdf_bytes,
         media_type="application/pdf",
